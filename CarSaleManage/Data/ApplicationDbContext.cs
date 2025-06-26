@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using CarSaleManagement.Models;
+using CarSaleManage.Models;
 
 namespace CarSaleManage.Data
 {
@@ -10,6 +10,6 @@ namespace CarSaleManage.Data
             : base(options)
         {
         }
-        public DbSet<CarSaleManagement.Models.Vehicle> Vehicle { get; set; } = default!;
+        public DbSet<CarSaleManage.Models.Vehicle> Vehicle { get; set; } = default!;
     }
 }

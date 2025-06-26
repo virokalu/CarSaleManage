@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CarSaleManage.Data;
-using CarSaleManage.Models;
+using CarSaleManagement.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace CarSaleManage.Controllers

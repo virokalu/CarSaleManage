@@ -2,13 +2,19 @@
 @model IEnumerable<IdentityRole>
 
 @{
-	ViewData["Title"] = "User Roles";
+	ViewData["Title"] = "Roles";
 }
 
-<h1>View Roles</h1>
-<p>
-	<a asp-action="Create">Create Role</a>
-</p>
+<h1>Roles</h1>
+
+@* <form method="post" asp-action="Create" asp-controller="Roles"> *@
+@* 	<div class="input-group"> *@
+@* 		<input name="identityRole" class="form-control w-25"> *@
+@* 		<span class="input-group-btn"> *@
+@* 			<button class="btn btn-primary">Add New Role</button> *@
+@* 		</span> *@
+@* 	</div> *@
+@* </form> *@
 
 <table class="table">
 	<thead>
@@ -36,3 +42,5 @@
 		}
 	</tbody>
 </table>
+
+<a class="btn btn-primary" asp-controller="UserRoles" asp-action="Index" >User Role Manageer</a>

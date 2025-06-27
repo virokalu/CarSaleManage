@@ -52,6 +52,13 @@ namespace CarSaleManage.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public class InputModel
         {
+            [Required]
+            [Display(Name = "First Name")]
+            public string Firstname { get; set; }
+
+            [Required]
+            [Display(Name = "Last Name")]
+            public string Lastname { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -70,7 +77,9 @@ namespace CarSaleManage.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                Firstname = user.Firstname,
+                Lastname = user.Lastname,
             };
         }
 
@@ -107,6 +116,18 @@ namespace CarSaleManage.Areas.Identity.Pages.Account.Manage
                 if (!setPhoneResult.Succeeded)
                 {
                     StatusMessage = "Unexpected error when trying to set phone number.";
+                    return RedirectToPage();
+                }
+            }
+
+            if (Input.Firstname != user.Firstname || Input.Lastname != user.Lastname)
+            {
+                user.Firstname = Input.Firstname;
+                user.Lastname = Input.Lastname;
+                var setNameResults = await _userManager.UpdateAsync(user);
+                if (!setNameResults.Succeeded)
+                {
+                    StatusMessage = "Unexpected error when trying to set the names";
                     return RedirectToPage();
                 }
             }

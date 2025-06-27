@@ -18,7 +18,7 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-//Seed Default Roles
+//Seed Default Roles and Admin Data
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;

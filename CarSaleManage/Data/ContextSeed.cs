@@ -24,14 +24,19 @@ namespace CarSaleManage.Data
                 if (user == null)
                 {
 
-                    await userManager.CreateAsync(defaultUser, "123Pa$$word.");
+                    var results = await userManager.CreateAsync(defaultUser, "123Pa$$word.");
 
                     //Seed Roles
                     await roleManager.CreateAsync(new IdentityRole(Enums.Roles.Admin.ToString()));
                     await roleManager.CreateAsync(new IdentityRole(Enums.Roles.Manager.ToString()));
                     await roleManager.CreateAsync(new IdentityRole(Enums.Roles.User.ToString()));
-                }
 
+                    if (results.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(defaultUser, Data.Enums.Roles.Admin.ToString());
+                    }
+
+                }
             }
         }
     }

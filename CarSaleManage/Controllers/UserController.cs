@@ -9,10 +9,12 @@ namespace CarSaleManage.Controllers
     public class UserController : Controller
     {
         private readonly UserManager<AppUser> userManager;
+        private readonly IUserStore<AppUser> userStore;
 
-        public UserController(UserManager<AppUser> userManager) 
+        public UserController(UserManager<AppUser> userManager, IUserStore<AppUser> userStore) 
         {
             this.userManager = userManager;
+            this.userStore = userStore;
         }
         public async Task<IActionResult> Index()
         {
@@ -28,10 +30,11 @@ namespace CarSaleManage.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Email,PhoneNumber,FirstName,LastName")] AppUser user)
+        public async Task<IActionResult> Create([Bind("Email,PhoneNumber,Firstname,Lastname")] AppUser user)
         {
             if (ModelState.IsValid)
             {
+                await userStore.SetUserNameAsync(user, user.Email, CancellationToken.None);
                 var result = await userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

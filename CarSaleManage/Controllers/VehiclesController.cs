@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CarSaleManage.Controllers
 {
+    [Authorize]
     public class VehiclesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,14 +22,12 @@ namespace CarSaleManage.Controllers
         }
 
         // GET: Vehicles
-        [Authorize]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Vehicle.ToListAsync());
         }
 
         // GET: Vehicles/Details/5
-        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -47,7 +46,6 @@ namespace CarSaleManage.Controllers
         }
 
         // GET: Vehicles/Create
-        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -56,7 +54,6 @@ namespace CarSaleManage.Controllers
         // POST: Vehicles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Make,ModelNo,Classification,Origin,UsedCountry,Year,RegNo,RegDate,EngineNo,FuelSystem,EngineCap,ChassisNo,FuelType,Color,MeterReading")] Vehicle vehicle)
@@ -71,7 +68,6 @@ namespace CarSaleManage.Controllers
         }
 
         // GET: Vehicles/Edit/5
-        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -90,7 +86,6 @@ namespace CarSaleManage.Controllers
         // POST: Vehicles/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Make,ModelNo,Classification,Origin,UsedCountry,Year,RegNo,RegDate,EngineNo,FuelSystem,EngineCap,ChassisNo,FuelType,Color,MeterReading")] Vehicle vehicle)
@@ -124,7 +119,6 @@ namespace CarSaleManage.Controllers
         }
 
         // GET: Vehicles/Delete/5
-        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -143,7 +137,6 @@ namespace CarSaleManage.Controllers
         }
 
         // POST: Vehicles/Delete/5
-        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

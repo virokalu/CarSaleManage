@@ -20,6 +20,68 @@ namespace CarSaleManage.Controllers
 
             return View(users);
         }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Email,PhoneNumber,FirstName,LastName")] AppUser user)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await userManager.CreateAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            return View(user);
+        }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var user = await userManager.FindByIdAsync(id.ToString()!);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Email,PhoneNumber,FirstName,LastName")] AppUser user)
+        {
+            if (id != user.Id)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                var result = await userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            return View(user);
+        }
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -52,7 +114,9 @@ namespace CarSaleManage.Controllers
             return View(user);
         }
 
-        // POST: Vehicles/Delete/5
+
+
+        // POST: User/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -66,6 +130,20 @@ namespace CarSaleManage.Controllers
             await userManager.DeleteAsync(user);
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private AppUser CreateUser()
+        {
+            try
+            {
+                return Activator.CreateInstance<AppUser>();
+            }
+            catch
+            {
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(AppUser)}'. " +
+                    $"Ensure that '{nameof(AppUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+            }
         }
     }
 }

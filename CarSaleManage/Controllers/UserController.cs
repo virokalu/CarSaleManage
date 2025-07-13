@@ -16,6 +16,7 @@ namespace CarSaleManage.Controllers
             this.userManager = userManager;
             this.userStore = userStore;
         }
+        //GET: User
         public async Task<IActionResult> Index()
         {
             var users = await userManager.Users.ToListAsync();
@@ -23,11 +24,13 @@ namespace CarSaleManage.Controllers
             return View(users);
         }
 
+        // GET: User/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        // POST: User/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Email,PhoneNumber,Firstname,Lastname")] AppUser user)
@@ -48,6 +51,7 @@ namespace CarSaleManage.Controllers
             return View(user);
         }
 
+        // GET: User/Edit
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -62,6 +66,7 @@ namespace CarSaleManage.Controllers
             return View(user);
         }
 
+        // POST: User/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,Email,PhoneNumber,FirstName,LastName")] AppUser user)
@@ -85,7 +90,8 @@ namespace CarSaleManage.Controllers
             return View(user);
         }
 
-        public async Task<IActionResult> Details(int? id)
+        // Get: User/Details/5
+        public async Task<IActionResult> Details(string? id)
         {
             if (id == null)
             {
@@ -101,7 +107,8 @@ namespace CarSaleManage.Controllers
             return View(user);
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        // GET: User/Delete/5
+        public async Task<IActionResult> Delete(string? id)
         {
             if (id == null)
             {
@@ -116,13 +123,12 @@ namespace CarSaleManage.Controllers
 
             return View(user);
         }
-
 
 
         // POST: User/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var user = await userManager.FindByIdAsync(id.ToString()!);
             if (user == null)

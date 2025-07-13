@@ -21,5 +21,7 @@ public class Vehicle
     public string FuelType { get; set; }
     public string Color { get; set; }
     public int? MeterReading { get; set; }
+    public string? AppUserId { get; set; }
+    public AppUser? AppUser { get; set; }
 
 }

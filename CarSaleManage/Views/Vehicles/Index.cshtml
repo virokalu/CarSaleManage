@@ -31,32 +31,9 @@
                 @Html.DisplayNameFor(model => model.Year)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RegNo)
+                @Html.DisplayNameFor(model => model.Images)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RegDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EngineNo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FuelSystem)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EngineCap)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ChassisNo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FuelType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Color)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MeterReading)
-            </th>
+            
             <th></th>
         </tr>
     </thead>
@@ -82,32 +59,15 @@
                 @Html.DisplayFor(modelItem => item.Year)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RegNo)
+                    @if (item.Images != null && item.Images.Any())
+                    {
+                        foreach (var img in item.Images)
+                        {
+                            <img src="@img" alt="Vehicle Image" style="max-width:200px;" />
+                        }
+                    }
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RegDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EngineNo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FuelSystem)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EngineCap)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ChassisNo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FuelType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Color)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MeterReading)
-            </td>
+            
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

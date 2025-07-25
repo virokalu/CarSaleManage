@@ -56,10 +56,35 @@ namespace CarSaleManage.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Make,ModelNo,Classification,Origin,UsedCountry,Year,RegNo,RegDate,EngineNo,FuelSystem,EngineCap,ChassisNo,FuelType,Color,MeterReading")] Vehicle vehicle)
+        public async Task<IActionResult> Create([Bind("Id,Make,ModelNo,Classification,Origin,UsedCountry,Year,RegNo,RegDate,EngineNo,FuelSystem,EngineCap,ChassisNo,FuelType,Color,MeterReading")] Vehicle vehicle, List<IFormFile> Images)
         {
             if (ModelState.IsValid)
             {
+                var imagePaths = new List<string>();
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                foreach (var formFile in Images)
+                {
+                    if (formFile.Length > 0)
+                    {
+                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
+                        var filePath = Path.Combine(uploadsFolder, fileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await formFile.CopyToAsync(stream);
+                        }
+
+                        // Store the relative path to the image
+                        imagePaths.Add("/uploads/" + fileName);
+                    }
+                }
+
+                vehicle.Images = imagePaths;
+
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -88,7 +113,7 @@ namespace CarSaleManage.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Make,ModelNo,Classification,Origin,UsedCountry,Year,RegNo,RegDate,EngineNo,FuelSystem,EngineCap,ChassisNo,FuelType,Color,MeterReading")] Vehicle vehicle)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Make,ModelNo,Classification,Origin,UsedCountry,Year,RegNo,RegDate,EngineNo,FuelSystem,EngineCap,ChassisNo,FuelType,Color,MeterReading")] Vehicle vehicle, List<IFormFile> Images)
         {
             if (id != vehicle.Id)
             {
@@ -97,9 +122,57 @@ namespace CarSaleManage.Controllers
 
             if (ModelState.IsValid)
             {
+                // Get the existing vehicle from the database
+                var existingVehicle = await _context.Vehicle.FindAsync(id);
+                if (existingVehicle == null)
+                    return NotFound();
+
+                // Update scalar properties
+                existingVehicle.Make = vehicle.Make;
+                existingVehicle.ModelNo = vehicle.ModelNo;
+                existingVehicle.Classification = vehicle.Classification;
+                existingVehicle.Origin = vehicle.Origin;
+                existingVehicle.UsedCountry = vehicle.UsedCountry;
+                existingVehicle.Year = vehicle.Year;
+                existingVehicle.RegNo = vehicle.RegNo;
+                existingVehicle.RegDate = vehicle.RegDate;
+                existingVehicle.EngineNo = vehicle.EngineNo;
+                existingVehicle.FuelSystem = vehicle.FuelSystem;
+                existingVehicle.EngineCap = vehicle.EngineCap;
+                existingVehicle.ChassisNo = vehicle.ChassisNo;
+                existingVehicle.FuelType = vehicle.FuelType;
+                existingVehicle.Color = vehicle.Color;
+                existingVehicle.MeterReading = vehicle.MeterReading;
+                existingVehicle.AppUserId = vehicle.AppUserId;
+
+
                 try
                 {
-                    _context.Update(vehicle);
+                    // Handle new image uploads
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                    if (!Directory.Exists(uploadsFolder))
+                        Directory.CreateDirectory(uploadsFolder);
+
+                    if (Images != null && Images.Count > 0)
+                    {
+                        foreach (var formFile in Images)
+                        {
+                            if (formFile.Length > 0)
+                            {
+                                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
+                                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                                using (var stream = new FileStream(filePath, FileMode.Create))
+                                {
+                                    await formFile.CopyToAsync(stream);
+                                }
+
+                                // Add the new image path
+                                existingVehicle.Images.Add("/uploads/" + fileName);
+                            }
+                        }
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

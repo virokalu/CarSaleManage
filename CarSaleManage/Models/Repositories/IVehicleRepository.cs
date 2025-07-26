@@ -9,5 +9,6 @@
         Task<IEnumerable<Vehicle>> SerachbyChassisNoAsync(string chassisNo);
         void Update(Vehicle vehicle);
         void Remove(Vehicle vehicle);
+        Task CompleteAsync();
     }
 }

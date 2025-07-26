@@ -24,24 +24,55 @@ namespace CarSaleManage.Services
             else
             {
                 _vehicleRepository.Remove(vehicle);
-                _vehicleRepository.CompleteAsync();
+                await _vehicleRepository.CompleteAsync();
+                return ServiceResult<Vehicle>.Ok();
             }
 
         }
 
-        public Task<ServiceResult<Vehicle>> FindByIdAsync(int id)
+        public async Task<ServiceResult<Vehicle>> FindByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var vehicle = await _vehicleRepository.FindByIdAsync(id);
+            if (vehicle == null)
+            {
+                return ServiceResult<Vehicle>.Fail("Vehicle not Found");
+            }
+            else
+            {
+                return ServiceResult<Vehicle>.Ok();
+            }
         }
 
-        public Task<IEnumerable<Vehicle>> ListAsync()
+        public async Task<IEnumerable<Vehicle>> ListAsync()
         {
-            throw new NotImplementedException();
+            return await _vehicleRepository.ListAsync();
         }
 
-        public Task<ServiceResult<Vehicle>> Save(Vehicle vehicle)
+        public async Task<ServiceResult<Vehicle>> Save(Vehicle vehicle, List<IFormFile> Images)
         {
-            throw new NotImplementedException();
+            var imagePaths = new List<string>();
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+            foreach (var formFile in Images)
+            {
+                if (formFile.Length > 0)
+                {
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await formFile.CopyToAsync(stream);
+                    }
+
+                    // Store the relative path to the image
+                    imagePaths.Add("/uploads/" + fileName);
+                }
+            }
+            vehicle.Images = imagePaths;
+
+
         }
 
         public Task<ServiceResult<Vehicle>> Update(Vehicle vehicle)

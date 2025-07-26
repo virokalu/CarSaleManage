@@ -1,4 +1,5 @@
-﻿namespace CarSaleManage.Models.Services.Communication
+﻿
+namespace CarSaleManage.Models.Services.Communication
 {
     public class ServiceResult<T>
     {
@@ -6,7 +7,8 @@
         public T? Data { get; protected set; }
         public string? Error { get; protected set; }
 
-        public static ServiceResult<T> Ok(T data) => new() { Success = true, Data = data };
+        public static ServiceResult<T> Ok(T? data) => new() { Success = true, Data = data };
         public static ServiceResult<T> Fail(string error) => new() { Success = false, Error = error };
+        public static ServiceResult<T> Ok() => new() { Success = true };
     }
 }

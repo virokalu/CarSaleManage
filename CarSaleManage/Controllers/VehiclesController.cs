@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarSaleManage.Data;
 using CarSaleManage.Models;
 using Microsoft.AspNetCore.Authorization;
+using CarSaleManage.Models.Services;
 
 namespace CarSaleManage.Controllers
 {
@@ -15,16 +11,18 @@ namespace CarSaleManage.Controllers
     public class VehiclesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IVehicleService _vehicleService;
 
-        public VehiclesController(ApplicationDbContext context)
+        public VehiclesController(ApplicationDbContext context, IVehicleService vehicleService)
         {
             _context = context;
+            _vehicleService = vehicleService;
         }
 
         // GET: Vehicles
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Vehicle.ToListAsync());
+            return View(await _vehicleService.ListAsync());
         }
 
         // GET: Vehicles/Details/5
@@ -35,14 +33,11 @@ namespace CarSaleManage.Controllers
                 return NotFound();
             }
 
-            var vehicle = await _context.Vehicle
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (vehicle == null)
-            {
-                return NotFound();
-            }
+            var result = await _vehicleService.FindByIdAsync(id.Value);
+            if (result.Success) return View(result.Data);
 
-            return View(vehicle);
+            Console.WriteLine(result.Error);
+            return NotFound();
         }
 
         // GET: Vehicles/Create

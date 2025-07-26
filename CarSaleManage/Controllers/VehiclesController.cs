@@ -113,7 +113,7 @@ namespace CarSaleManage.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Make,ModelNo,Classification,Origin,UsedCountry,Year,RegNo,RegDate,EngineNo,FuelSystem,EngineCap,ChassisNo,FuelType,Color,MeterReading")] Vehicle vehicle, List<IFormFile> Images)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Make,ModelNo,Classification,Origin,UsedCountry,Year,RegNo,RegDate,EngineNo,FuelSystem,EngineCap,ChassisNo,FuelType,Color,MeterReading")] Vehicle vehicle, List<IFormFile>? Images = null)
         {
             if (id != vehicle.Id)
             {

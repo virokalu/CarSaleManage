@@ -140,19 +140,5 @@ namespace CarSaleManage.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
-        private AppUser CreateUser()
-        {
-            try
-            {
-                return Activator.CreateInstance<AppUser>();
-            }
-            catch
-            {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(AppUser)}'. " +
-                    $"Ensure that '{nameof(AppUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
-            }
-        }
     }
 }

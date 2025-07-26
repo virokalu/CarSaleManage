@@ -9,9 +9,6 @@ namespace CarSaleManage.Repositories
         { 
             _context = context;
         }
-        public async Task CompleteAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
+        
     }
 }

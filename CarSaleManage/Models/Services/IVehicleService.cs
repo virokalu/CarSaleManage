@@ -1,4 +1,4 @@
-﻿using CarSaleManage.Extensions;
+﻿using CarSaleManage.Models.Services.Communication;
 
 namespace CarSaleManage.Models.Services
 {

@@ -1,5 +1,9 @@
 using CarSaleManage.Data;
 using CarSaleManage.Models;
+using CarSaleManage.Models.Repositories;
+using CarSaleManage.Models.Services;
+using CarSaleManage.Repositories;
+using CarSaleManage.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +19,11 @@ builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireCo
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+
+builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+builder.Services.AddScoped<IVehicleService, VehicleService>();
+
 
 var app = builder.Build();
 

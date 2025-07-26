@@ -45,5 +45,9 @@ namespace CarSaleManage.Repositories
         {
             _context.Vehicle.Remove(vehicle);
         }
+        public async Task CompleteAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }

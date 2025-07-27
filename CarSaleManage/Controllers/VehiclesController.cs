@@ -117,7 +117,7 @@ namespace CarSaleManage.Controllers
             }
             if ((vehicle.ExistingImages?.Count ?? 0) - (vehicle.ImagesToRemove?.Count ?? 0) + (vehicle.Images?.Count ?? 0) < 1)
             {
-                ModelState.AddModelError("Images", "At least one image is required.");
+                ModelState.AddModelError("", "At least one image is required.");
                 return View(vehicle);
             }
 
@@ -165,11 +165,6 @@ namespace CarSaleManage.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool VehicleExists(int id)
-        {
-            return _context.Vehicle.Any(e => e.Id == id);
         }
     }
 }

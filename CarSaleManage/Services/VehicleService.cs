@@ -146,7 +146,7 @@ namespace CarSaleManage.Services
                 vehicle.Color = vehicleEditDto.Color;
                 vehicle.MeterReading = vehicleEditDto.MeterReading;
 
-                List<string> imagePaths = await ImageStore(vehicleEditDto.Images);
+                List<string> imagePaths = vehicleEditDto.Images==null ? new() : await ImageStore(vehicleEditDto.Images);
 
                 vehicle.Images.AddRange(imagePaths);
 

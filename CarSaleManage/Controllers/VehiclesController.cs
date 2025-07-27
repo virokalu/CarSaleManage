@@ -98,12 +98,8 @@ namespace CarSaleManage.Controllers
                         MeterReading = vehicle.MeterReading==null? 0 : vehicle.MeterReading.Value,
                         ExistingImages = vehicle.Images
                     };
+                    return View(vehicleEditdto);
                 }
-                else
-                {
-                    return NotFound();
-                }
-                return View(result.Data);
             }
             return NotFound();
         }

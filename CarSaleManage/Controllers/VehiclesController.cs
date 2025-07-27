@@ -11,12 +11,10 @@ namespace CarSaleManage.Controllers
     [Authorize]
     public class VehiclesController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IVehicleService _vehicleService;
 
-        public VehiclesController(ApplicationDbContext context, IVehicleService vehicleService)
+        public VehiclesController(IVehicleService vehicleService)
         {
-            _context = context;
             _vehicleService = vehicleService;
         }
 
@@ -142,14 +140,11 @@ namespace CarSaleManage.Controllers
                 return NotFound();
             }
 
-            var vehicle = await _context.Vehicle
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (vehicle == null)
-            {
-                return NotFound();
-            }
+            var result = await _vehicleService.FindByIdAsync(id.Value);
+            if (result.Success) return View(result.Data);
 
-            return View(vehicle);
+            Console.WriteLine(result.Error);
+            return NotFound();
         }
 
         // POST: Vehicles/Delete/5
@@ -157,14 +152,11 @@ namespace CarSaleManage.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var vehicle = await _context.Vehicle.FindAsync(id);
-            if (vehicle != null)
-            {
-                _context.Vehicle.Remove(vehicle);
-            }
+            var result = await _vehicleService.Delete(id);
+            if (result.Success) return RedirectToAction(nameof(Index));
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            Console.WriteLine(result.Error);
+            return NotFound();
         }
     }
 }

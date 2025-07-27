@@ -8,6 +8,7 @@ namespace CarSaleManage.Controllers
 {
     public class UserController : Controller
     {
+
         private readonly UserManager<AppUser> userManager;
         private readonly IUserStore<AppUser> userStore;
 

@@ -3,6 +3,7 @@
     public class VehicleEditDto : VehicleDto
     {
         public int Id { get; set; }
-        public List<String> ExistingImages { get; set; } = new List<string>();
+        public List<string> ExistingImages { get; set; } = new();
+        public List<string> ImagesToRemove { get; set; } = new();
     }
 }

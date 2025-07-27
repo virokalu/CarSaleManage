@@ -53,7 +53,7 @@ namespace CarSaleManage.Controllers
                     RoleId = role.Id,
                     RoleName = role.Name
                 };
-                if (await _userManager.IsInRoleAsync(user, role.Name))
+                if (await _userManager.IsInRoleAsync(user, role.Name==null?"User": role.Name))
                 {
                     userRolesViewModel.Selected = true;
                 }
@@ -80,7 +80,7 @@ namespace CarSaleManage.Controllers
                 ModelState.AddModelError("", "Cannot remove user existing roles");
                 return View(model);
             }
-            result = await _userManager.AddToRolesAsync(user, model.Where(x => x.Selected).Select(y => y.RoleName));
+            result = await _userManager.AddToRolesAsync(user, model.Where(x => x.Selected).Select(y => y.RoleName == null ? "User" : y.RoleName ));
             if (!result.Succeeded)
             {
                 ModelState.AddModelError("", "Cannot add selected roles to user");

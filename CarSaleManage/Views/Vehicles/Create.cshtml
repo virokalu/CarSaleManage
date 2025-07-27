@@ -1,4 +1,4 @@
-﻿@model CarSaleManage.Models.Vehicle
+﻿@model CarSaleManage.Models.Dtos.VehicleDto
 
 @{
     ViewData["Title"] = "Create";
@@ -90,6 +90,7 @@
 
             <div>
                 <input type="file" asp-for="Images" multiple accept="image/*" />
+                <span asp-validation-for="Images" class="text-danger"></span>
             </div>
 
 

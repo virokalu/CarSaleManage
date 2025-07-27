@@ -1,4 +1,6 @@
-﻿namespace CarSaleManage.Models.Dtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CarSaleManage.Models.Dtos
 {
     public class VehicleDto
     {
@@ -17,7 +19,7 @@
         public string? FuelType { get; set; }
         public string? Color { get; set; }
         public int MeterReading { get; set; }
-
+        [Required]
         public List<IFormFile> Images { get; set; } = new();
     }
 }

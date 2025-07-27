@@ -4,6 +4,7 @@ using CarSaleManage.Data;
 using CarSaleManage.Models;
 using Microsoft.AspNetCore.Authorization;
 using CarSaleManage.Models.Services;
+using CarSaleManage.Models.Dtos;
 
 namespace CarSaleManage.Controllers
 {
@@ -51,38 +52,14 @@ namespace CarSaleManage.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Make,ModelNo,Classification,Origin,UsedCountry,Year,RegNo,RegDate,EngineNo,FuelSystem,EngineCap,ChassisNo,FuelType,Color,MeterReading")] Vehicle vehicle, List<IFormFile> Images)
+        public async Task<IActionResult> Create(VehicleDto vehicle)
         {
             if (ModelState.IsValid)
             {
-                var imagePaths = new List<string>();
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                var result = await _vehicleService.Save(vehicle);
+                if (result.Success) return RedirectToAction(nameof(Index));
 
-                if (!Directory.Exists(uploadsFolder))
-                    Directory.CreateDirectory(uploadsFolder);
-
-                foreach (var formFile in Images)
-                {
-                    if (formFile.Length > 0)
-                    {
-                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
-                        var filePath = Path.Combine(uploadsFolder, fileName);
-
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await formFile.CopyToAsync(stream);
-                        }
-
-                        // Store the relative path to the image
-                        imagePaths.Add("/uploads/" + fileName);
-                    }
-                }
-
-                vehicle.Images = imagePaths;
-
-                _context.Add(vehicle);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(vehicle);              
             }
             return View(vehicle);
         }
@@ -95,12 +72,40 @@ namespace CarSaleManage.Controllers
                 return NotFound();
             }
 
-            var vehicle = await _context.Vehicle.FindAsync(id);
-            if (vehicle == null)
+            var result = await _vehicleService.FindByIdAsync(id.Value);
+            if (result.Success)
             {
-                return NotFound();
+                var vehicle = result.Data;
+                if (vehicle != null)
+                {
+                    var vehicleEditdto = new VehicleEditDto
+                    {
+                        Id = vehicle.Id,
+                        Make = vehicle.Make,
+                        ModelNo = vehicle.ModelNo,
+                        Classification = vehicle.Classification,
+                        Origin = vehicle.Origin,
+                        UsedCountry = vehicle.UsedCountry,
+                        Year = vehicle.Year,
+                        RegNo = vehicle.RegNo,
+                        RegDate = vehicle.RegDate == null? new DateTime() : vehicle.RegDate.Value,
+                        EngineNo = vehicle.EngineNo,
+                        FuelSystem = vehicle.FuelSystem,
+                        EngineCap = vehicle.EngineCap,
+                        ChassisNo = vehicle.ChassisNo,
+                        FuelType = vehicle.FuelType,
+                        Color = vehicle.Color,
+                        MeterReading = vehicle.MeterReading==null? 0 : vehicle.MeterReading.Value,
+                        ExistingImages = vehicle.Images
+                    };
+                }
+                else
+                {
+                    return NotFound();
+                }
+                return View(result.Data);
             }
-            return View(vehicle);
+            return NotFound();
         }
 
         // POST: Vehicles/Edit/5
@@ -108,80 +113,27 @@ namespace CarSaleManage.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Make,ModelNo,Classification,Origin,UsedCountry,Year,RegNo,RegDate,EngineNo,FuelSystem,EngineCap,ChassisNo,FuelType,Color,MeterReading")] Vehicle vehicle, List<IFormFile>? Images = null)
+        public async Task<IActionResult> Edit(int id, VehicleEditDto vehicle)
         {
             if (id != vehicle.Id)
             {
                 return NotFound();
             }
+            if ((vehicle.ExistingImages?.Count ?? 0) - (vehicle.ImagesToRemove?.Count ?? 0) + (vehicle.Images?.Count ?? 0) < 1)
+            {
+                ModelState.AddModelError("Images", "At least one image is required.");
+                return View(vehicle);
+            }
 
             if (ModelState.IsValid)
             {
-                // Get the existing vehicle from the database
-                var existingVehicle = await _context.Vehicle.FindAsync(id);
-                if (existingVehicle == null)
-                    return NotFound();
+                var result = await _vehicleService.Update(vehicle);
+                if(result.Success) return RedirectToAction(nameof(Index));
 
-                // Update scalar properties
-                existingVehicle.Make = vehicle.Make;
-                existingVehicle.ModelNo = vehicle.ModelNo;
-                existingVehicle.Classification = vehicle.Classification;
-                existingVehicle.Origin = vehicle.Origin;
-                existingVehicle.UsedCountry = vehicle.UsedCountry;
-                existingVehicle.Year = vehicle.Year;
-                existingVehicle.RegNo = vehicle.RegNo;
-                existingVehicle.RegDate = vehicle.RegDate;
-                existingVehicle.EngineNo = vehicle.EngineNo;
-                existingVehicle.FuelSystem = vehicle.FuelSystem;
-                existingVehicle.EngineCap = vehicle.EngineCap;
-                existingVehicle.ChassisNo = vehicle.ChassisNo;
-                existingVehicle.FuelType = vehicle.FuelType;
-                existingVehicle.Color = vehicle.Color;
-                existingVehicle.MeterReading = vehicle.MeterReading;
-                existingVehicle.AppUserId = vehicle.AppUserId;
+                NotFound();
+                Console.WriteLine(result.Error);
+                View(vehicle);
 
-
-                try
-                {
-                    // Handle new image uploads
-                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                    if (!Directory.Exists(uploadsFolder))
-                        Directory.CreateDirectory(uploadsFolder);
-
-                    if (Images != null && Images.Count > 0)
-                    {
-                        foreach (var formFile in Images)
-                        {
-                            if (formFile.Length > 0)
-                            {
-                                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(formFile.FileName);
-                                var filePath = Path.Combine(uploadsFolder, fileName);
-
-                                using (var stream = new FileStream(filePath, FileMode.Create))
-                                {
-                                    await formFile.CopyToAsync(stream);
-                                }
-
-                                // Add the new image path
-                                existingVehicle.Images.Add("/uploads/" + fileName);
-                            }
-                        }
-                    }
-
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!VehicleExists(vehicle.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
             }
             return View(vehicle);
         }

@@ -126,6 +126,10 @@ namespace CarSaleManage.Services
 
                 if (vehicle == null) return ServiceResult<Vehicle>.Fail("Vehicle not Found");
 
+                vehicle.Images = vehicle.Images
+                    .Except(vehicleEditDto.ImagesToRemove ?? new List<string>())
+                    .ToList();
+
                 vehicle.Make = vehicleEditDto.Make;
                 vehicle.ModelNo = vehicleEditDto.ModelNo;
                 vehicle.Classification = vehicleEditDto.Classification;
@@ -141,7 +145,6 @@ namespace CarSaleManage.Services
                 vehicle.FuelType = vehicleEditDto.FuelType;
                 vehicle.Color = vehicleEditDto.Color;
                 vehicle.MeterReading = vehicleEditDto.MeterReading;
-                vehicle.Images = vehicleEditDto.ExistingImages;
 
                 List<string> imagePaths = await ImageStore(vehicleEditDto.Images);
 

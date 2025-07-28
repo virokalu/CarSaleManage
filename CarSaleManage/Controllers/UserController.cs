@@ -1,4 +1,6 @@
 ﻿using CarSaleManage.Models;
+using CarSaleManage.Models.Dtos;
+using CarSaleManage.Models.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,20 +10,20 @@ namespace CarSaleManage.Controllers
 {
     public class UserController : Controller
     {
-
+        private readonly IUserService _userService;
         private readonly UserManager<AppUser> userManager;
         private readonly IUserStore<AppUser> userStore;
 
-        public UserController(UserManager<AppUser> userManager, IUserStore<AppUser> userStore) 
+        public UserController(UserManager<AppUser> userManager, IUserStore<AppUser> userStore, IUserService userService) 
         {
             this.userManager = userManager;
             this.userStore = userStore;
+            this._userService = userService;
         }
         //GET: User
         public async Task<IActionResult> Index()
         {
-            var users = await userManager.Users.ToListAsync();
-
+            var users = await _userService.ListAsync();
             return View(users);
         }
 
@@ -34,43 +36,49 @@ namespace CarSaleManage.Controllers
         // POST: User/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Email,PhoneNumber,Firstname,Lastname")] AppUser user)
+        public async Task<IActionResult> Create(UserDto user)
         {
             if (ModelState.IsValid)
             {
-                await userStore.SetUserNameAsync(user, user.Email, CancellationToken.None);
-                var result = await userManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                var result = await _userService.CreateAsync(user);
+                if(result.Succeeded) return RedirectToAction(nameof(Index));
+
+                return View(user);
             }
             return View(user);
         }
 
         // GET: User/Edit
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var user = await userManager.FindByIdAsync(id.ToString()!);
-            if (user == null)
+            var result = await _userService.GetAsync(id);
+            if(result.Success)
             {
-                return NotFound();
+                var user = result.Data;
+                if(user != null)
+                {
+                    var userEditDto = new UserEditDto
+                    {
+                        Id = user.Id,
+                        Firstname = user.Firstname,
+                        Lastname = user.Lastname,
+                        PhoneNumber = user.PhoneNumber,
+                    };
+                    return View(userEditDto);
+                }
+
             }
-            return View(user);
+            return NotFound();
         }
 
         // POST: User/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Email,PhoneNumber,FirstName,LastName")] AppUser user)
+        public async Task<IActionResult> Edit(string id, UserEditDto user)
         {
             if (id != user.Id)
             {
@@ -78,15 +86,11 @@ namespace CarSaleManage.Controllers
             }
             if (ModelState.IsValid)
             {
-                var result = await userManager.UpdateAsync(user);
-                if (result.Succeeded)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                var result = await _userService.UpdateAsync(user);
+                if (result.Succeeded) return RedirectToAction(nameof(Index));
+
+                NotFound();
+                Console.WriteLine(string.Join("; ", result.Errors.Select(e => e.Description)));
             }
             return View(user);
         }
@@ -99,13 +103,11 @@ namespace CarSaleManage.Controllers
                 return NotFound();
             }
 
-            var user = await userManager.FindByIdAsync(id.ToString()!);
-            if (user == null)
-            {
-                return NotFound();
-            }
+            var result = await _userService.GetAsync(id);
+            if(result.Success) return View(result.Data);
 
-            return View(user);
+            Console.WriteLine(result.Error);
+            return NotFound();
         }
 
         // GET: User/Delete/5
@@ -116,13 +118,12 @@ namespace CarSaleManage.Controllers
                 return NotFound();
             }
 
-            var user = await userManager.FindByIdAsync(id.ToString()!);
-            if (user == null)
-            {
-                return NotFound();
-            }
+            var result = await _userService.GetAsync(id);
+            if (result.Success)
+                return View(result.Data);
 
-            return View(user);
+            Console.WriteLine(result.Error);
+            return NotFound();
         }
 
 
@@ -131,15 +132,11 @@ namespace CarSaleManage.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var user = await userManager.FindByIdAsync(id.ToString()!);
-            if (user == null)
-            {
-                return NotFound();
-            }
+            var result = await _userService.DeleteAsync(id);
+            if(result.Succeeded) return RedirectToAction(nameof(Index));
 
-            await userManager.DeleteAsync(user);
-
-            return RedirectToAction(nameof(Index));
+            Console.WriteLine(string.Join("; ", result.Errors.Select(e => e.Description)));
+            return NotFound();
         }
     }
 }

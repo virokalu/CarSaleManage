@@ -126,8 +126,6 @@ namespace CarSaleManage.Controllers
 
                 NotFound();
                 Console.WriteLine(result.Error);
-                View(vehicle);
-
             }
             return View(vehicle);
         }

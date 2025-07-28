@@ -67,9 +67,16 @@ namespace CarSaleManage.Services
             return await _userManager.Users.ToListAsync();
         }
 
-        public async Task<IdentityResult> UpdateAsync(AppUser user)
+        public async Task<IdentityResult> UpdateAsync(UserEditDto user)
         {
-            var exisitingUser = await _userManager.UpdateAsync(user);
+            var updateUser = new AppUser
+            {
+                Id = user.Id,
+                Firstname = user.Firstname,
+                Lastname = user.Lastname,
+                PhoneNumber = user.PhoneNumber,
+            };
+            var exisitingUser = await _userManager.UpdateAsync(updateUser);
             if (exisitingUser == null)
             {
                 return IdentityResult.Failed(new IdentityError

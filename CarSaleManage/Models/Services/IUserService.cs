@@ -9,7 +9,7 @@ namespace CarSaleManage.Models.Services
         Task<IEnumerable<AppUser>> ListAsync();
         Task<ServiceResult<AppUser>> GetAsync(string id);
         Task<IdentityResult> CreateAsync(UserDto user);
-        Task<IdentityResult> UpdateAsync(AppUser user);
+        Task<IdentityResult> UpdateAsync(UserEditDto user);
         Task<IdentityResult> DeleteAsync(string userId);
     }
 }

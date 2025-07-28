@@ -23,6 +23,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IVehicleService, VehicleService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 var app = builder.Build();

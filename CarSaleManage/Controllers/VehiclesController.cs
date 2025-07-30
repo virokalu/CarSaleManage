@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using CarSaleManage.Data;
-using CarSaleManage.Models;
 using Microsoft.AspNetCore.Authorization;
 using CarSaleManage.Models.Services;
 using CarSaleManage.Models.Dtos;

@@ -1,23 +1,15 @@
-﻿using CarSaleManage.Models;
-using CarSaleManage.Models.Dtos;
+﻿using CarSaleManage.Models.Dtos;
 using CarSaleManage.Models.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CarSaleManage.Controllers
 {
     public class UserController : Controller
     {
         private readonly IUserService _userService;
-        private readonly UserManager<AppUser> userManager;
-        private readonly IUserStore<AppUser> userStore;
 
-        public UserController(UserManager<AppUser> userManager, IUserStore<AppUser> userStore, IUserService userService) 
+        public UserController(IUserService userService) 
         {
-            this.userManager = userManager;
-            this.userStore = userStore;
             this._userService = userService;
         }
         //GET: User

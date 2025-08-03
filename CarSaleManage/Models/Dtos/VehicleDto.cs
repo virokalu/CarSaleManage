@@ -11,7 +11,8 @@ namespace CarSaleManage.Models.Dtos
         public string? UsedCountry { get; set; }
         public int Year { get; set; }
         public string? RegNo { get; set; }
-        public DateTime RegDate { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? RegDate { get; set; }
         public string? EngineNo { get; set; }
         public string? FuelSystem { get; set; }
         public int EngineCap { get; set; }

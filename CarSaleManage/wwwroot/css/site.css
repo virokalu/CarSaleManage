@@ -17,14 +17,7 @@ html,body {
   margin:0;
 }
 
-.card-title {
-    font-weight: 600;
-    color: #2c3e50;
-}
 
-.card-footer .btn {
-    width: 80px;
-}
 .navbar-text {
     font-size: 1rem;
     margin-left: 1rem;

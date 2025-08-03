@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace CarSaleManage.Data.Migrations
+namespace CarSaleManage.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -107,28 +107,24 @@ namespace CarSaleManage.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ChassisNo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Classification")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Color")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("EngineCap")
                         .HasColumnType("int");
 
                     b.Property<string>("EngineNo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FuelSystem")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FuelType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Images")
@@ -142,11 +138,9 @@ namespace CarSaleManage.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ModelNo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Origin")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("RegDate")
@@ -156,7 +150,6 @@ namespace CarSaleManage.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UsedCountry")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Year")

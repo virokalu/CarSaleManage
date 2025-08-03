@@ -4,76 +4,43 @@
     ViewData["Title"] = "Vehicles";
 }
 
-<h1>Vehicles</h1>
+<div class="text-end mb-4">
+    <a asp-action="Create" class="btn btn-outline-success px-4 py-2 shadow-sm">
+        <i class="bi bi-plus-circle me-1"></i> Add New Vehicle
+    </a>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Make)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ModelNo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Classification)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Origin)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UsedCountry)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Year)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Images)
-            </th>
-            
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Make)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModelNo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Classification)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Origin)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UsedCountry)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Year)
-            </td>
-            <td>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <a asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none text-dark">
                     @if (item.Images != null && item.Images.Any())
                     {
-                        foreach (var img in item.Images)
-                        {
-                            <img src="@img" alt="Vehicle Image" style="max-width:200px;" />
-                        }
+                        <img src="@item.Images.First()" class="card-img-top" alt="Vehicle Image" style="height:200px; object-fit:cover;" />
                     }
-            </td>
-            
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                    else
+                    {
+                        <img src="~/images/default-vehicle.jpg" class="card-img-top" alt="Default Vehicle" style="height:200px; object-fit:cover;" />
+                    }
+
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Make @item.ModelNo</h5>
+                        <p class="card-text">
+                            <strong>Classification:</strong> @item.Classification<br />
+                            <strong>Origin:</strong> @item.Origin<br />
+                            <strong>Used In:</strong> @item.UsedCountry<br />
+                            <strong>Year:</strong> @item.Year
+                        </p>
+                    </div>
+                </a>
+                <div class="card-footer text-center">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

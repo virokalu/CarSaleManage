@@ -4,43 +4,185 @@
     ViewData["Title"] = "Vehicles";
 }
 
-<div class="text-end mb-4">
-    <a asp-action="Create" class="btn btn-outline-success px-4 py-2 shadow-sm">
-        <i class="bi bi-plus-circle me-1"></i> Add New Vehicle
-    </a>
-</div>
+<div class="container-fluid mt-4">
+    <div class="text-end mb-4">
+        <a asp-action="Create" class="btn btn-outline-success px-4 py-2 shadow-sm">
+            <i class="bi bi-plus-circle me-1"></i> Add New Vehicle
+        </a>
+    </div>
 
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-    @foreach (var item in Model)
-    {
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <a asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none text-dark">
-                    @if (item.Images != null && item.Images.Any())
-                    {
-                        <img src="@item.Images.First()" class="card-img-top" alt="Vehicle Image" style="height:200px; object-fit:cover;" />
-                    }
-                    else
-                    {
-                        <img src="~/images/default-vehicle.jpg" class="card-img-top" alt="Default Vehicle" style="height:200px; object-fit:cover;" />
-                    }
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none text-dark">
+                        @if (item.Images != null && item.Images.Any())
+                        {
+                            <img src="@item.Images.First()" class="card-img-top" alt="Vehicle Image" style="height:200px; object-fit:cover;" />
+                        }
+                        else
+                        {
+                            <img src="~/images/default-vehicle.jpg" class="card-img-top" alt="Default Vehicle" style="height:200px; object-fit:cover;" />
+                        }
 
-                    <div class="card-body">
-                        <h5 class="card-title">@item.Make @item.ModelNo</h5>
-                        <p class="card-text">
-                            <strong>Classification:</strong> @item.Classification<br />
-                            <strong>Origin:</strong> @item.Origin<br />
-                            <strong>Used In:</strong> @item.UsedCountry<br />
-                            <strong>Year:</strong> @item.Year
-                        </p>
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Make @item.ModelNo</h5>
+                            <p class="card-text">
+                                <strong>Classification:</strong> @item.Classification<br />
+                                <strong>Origin:</strong> @item.Origin<br />
+                                <strong>Used In:</strong> @item.UsedCountry<br />
+                                <strong>Year:</strong> @item.Year
+                            </p>
+                        </div>
+                    </a>
+                    <div class="card-footer text-center">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
                     </div>
-                </a>
-                <div class="card-footer text-center">
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
                 </div>
             </div>
-        </div>
-    }
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none text-dark">
+                        @if (item.Images != null && item.Images.Any())
+                        {
+                            <img src="@item.Images.First()" class="card-img-top" alt="Vehicle Image" style="height:200px; object-fit:cover;" />
+                        }
+                        else
+                        {
+                            <img src="~/images/default-vehicle.jpg" class="card-img-top" alt="Default Vehicle" style="height:200px; object-fit:cover;" />
+                        }
+
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Make @item.ModelNo</h5>
+                            <p class="card-text">
+                                <strong>Classification:</strong> @item.Classification<br />
+                                <strong>Origin:</strong> @item.Origin<br />
+                                <strong>Used In:</strong> @item.UsedCountry<br />
+                                <strong>Year:</strong> @item.Year
+                            </p>
+                        </div>
+                    </a>
+                    <div class="card-footer text-center">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none text-dark">
+                        @if (item.Images != null && item.Images.Any())
+                        {
+                            <img src="@item.Images.First()" class="card-img-top" alt="Vehicle Image" style="height:200px; object-fit:cover;" />
+                        }
+                        else
+                        {
+                            <img src="~/images/default-vehicle.jpg" class="card-img-top" alt="Default Vehicle" style="height:200px; object-fit:cover;" />
+                        }
+
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Make @item.ModelNo</h5>
+                            <p class="card-text">
+                                <strong>Classification:</strong> @item.Classification<br />
+                                <strong>Origin:</strong> @item.Origin<br />
+                                <strong>Used In:</strong> @item.UsedCountry<br />
+                                <strong>Year:</strong> @item.Year
+                            </p>
+                        </div>
+                    </a>
+                    <div class="card-footer text-center">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none text-dark">
+                        @if (item.Images != null && item.Images.Any())
+                        {
+                            <img src="@item.Images.First()" class="card-img-top" alt="Vehicle Image" style="height:200px; object-fit:cover;" />
+                        }
+                        else
+                        {
+                            <img src="~/images/default-vehicle.jpg" class="card-img-top" alt="Default Vehicle" style="height:200px; object-fit:cover;" />
+                        }
+
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Make @item.ModelNo</h5>
+                            <p class="card-text">
+                                <strong>Classification:</strong> @item.Classification<br />
+                                <strong>Origin:</strong> @item.Origin<br />
+                                <strong>Used In:</strong> @item.UsedCountry<br />
+                                <strong>Year:</strong> @item.Year
+                            </p>
+                        </div>
+                    </a>
+                    <div class="card-footer text-center">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none text-dark">
+                        @if (item.Images != null && item.Images.Any())
+                        {
+                            <img src="@item.Images.First()" class="card-img-top" alt="Vehicle Image" style="height:200px; object-fit:cover;" />
+                        }
+                        else
+                        {
+                            <img src="~/images/default-vehicle.jpg" class="card-img-top" alt="Default Vehicle" style="height:200px; object-fit:cover;" />
+                        }
+
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Make @item.ModelNo</h5>
+                            <p class="card-text">
+                                <strong>Classification:</strong> @item.Classification<br />
+                                <strong>Origin:</strong> @item.Origin<br />
+                                <strong>Used In:</strong> @item.UsedCountry<br />
+                                <strong>Year:</strong> @item.Year
+                            </p>
+                        </div>
+                    </a>
+                    <div class="card-footer text-center">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none text-dark">
+                        @if (item.Images != null && item.Images.Any())
+                        {
+                            <img src="@item.Images.First()" class="card-img-top" alt="Vehicle Image" style="height:200px; object-fit:cover;" />
+                        }
+                        else
+                        {
+                            <img src="~/images/default-vehicle.jpg" class="card-img-top" alt="Default Vehicle" style="height:200px; object-fit:cover;" />
+                        }
+
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Make @item.ModelNo</h5>
+                            <p class="card-text">
+                                <strong>Classification:</strong> @item.Classification<br />
+                                <strong>Origin:</strong> @item.Origin<br />
+                                <strong>Used In:</strong> @item.UsedCountry<br />
+                                <strong>Year:</strong> @item.Year
+                            </p>
+                        </div>
+                    </a>
+                    <div class="card-footer text-center">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
 

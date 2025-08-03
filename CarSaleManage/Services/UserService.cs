@@ -31,8 +31,9 @@ namespace CarSaleManage.Services
 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(newUser, Data.Enums.Roles.User.ToString());
-                return IdentityResult.Success;
+                var roleresult = await _userManager.AddToRoleAsync(newUser, Data.Enums.Roles.User.ToString());
+                if (roleresult.Succeeded) return IdentityResult.Success;
+                return IdentityResult.Failed((IdentityError)roleresult.Errors);
             }
             return IdentityResult.Failed((IdentityError)result.Errors);
         }
@@ -48,8 +49,13 @@ namespace CarSaleManage.Services
                     Description = $"No user found."
                 });
             }
-            await _userManager.DeleteAsync(user);
-            return IdentityResult.Success;
+            var result = await _userManager.DeleteAsync(user);
+
+            if (result.Succeeded)
+            {
+                return IdentityResult.Success;
+            }
+            return IdentityResult.Failed((IdentityError)result.Errors);
         }
 
         public async Task<ServiceResult<AppUser>> GetAsync(string id)
@@ -69,22 +75,43 @@ namespace CarSaleManage.Services
 
         public async Task<IdentityResult> UpdateAsync(UserEditDto user)
         {
-            var updateUser = new AppUser
-            {
-                Id = user.Id,
-                Firstname = user.Firstname,
-                Lastname = user.Lastname,
-                PhoneNumber = user.PhoneNumber,
-            };
-            var exisitingUser = await _userManager.UpdateAsync(updateUser);
-            if (exisitingUser == null)
+            var existingUser = await _userManager.FindByIdAsync(user.Id);
+            if (existingUser == null)
             {
                 return IdentityResult.Failed(new IdentityError
                 {
                     Code = "UserNotFound",
-                    Description = $"No user found."
+                    Description = $"No user found with ID {user.Id}."
+
                 });
             }
+            if (existingUser.PhoneNumber != user.PhoneNumber)
+            {
+                var setPhoneResult = await _userManager.SetPhoneNumberAsync(existingUser, user.PhoneNumber);
+                if (!setPhoneResult.Succeeded)
+                {
+                    return IdentityResult.Failed(new IdentityError
+                    {
+                        Code = "Error",
+                        Description = $"Unexpected error when trying to set phone number."
+                    });
+                }
+            }
+            if (existingUser.Firstname != user.Firstname || existingUser.Lastname != user.Lastname)
+            {
+                existingUser.Firstname = user.Firstname;
+                existingUser.Lastname = user.Lastname;
+                var setNameResult = await _userManager.UpdateAsync(existingUser);
+                if (!setNameResult.Succeeded)
+                {
+                    return IdentityResult.Failed(new IdentityError
+                    {
+                        Code = "Error",
+                        Description = $"Unexpected error when trying to set name."
+                    });
+                }
+            }
+
             return IdentityResult.Success;
         }
     }

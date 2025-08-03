@@ -5,6 +5,7 @@
         Task<IEnumerable<Vehicle>> ListAsync();
         Task AddAsync(Vehicle vehicle);
         Task<Vehicle?> FindByIdAsync(int id);
+        Task<Vehicle?> FIndByIdWithVehicleAsync(int id);
         Task<IEnumerable<Vehicle>> FindbyUserAsync(string id);
         Task<IEnumerable<Vehicle>> SerachbyChassisNoAsync(string chassisNo);
         void Update(Vehicle vehicle);

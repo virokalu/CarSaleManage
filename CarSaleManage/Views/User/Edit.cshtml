@@ -1,4 +1,4 @@
-﻿@model CarSaleManage.Models.AppUser
+﻿@model CarSaleManage.Models.Dtos.UserEditDto;
 
 @{
 	ViewData["Title"] = "Edit";
@@ -23,18 +23,14 @@
 				<input asp-for="Lastname" class="form-control" />
 				<span asp-validation-for="Lastname" class="text-danger"></span>
 			</div>
-			<div class="form-group">
-				<label asp-for="Email" class="control-label"></label>
-				<input asp-for="Email" class="form-control" />
-				<span asp-validation-for="Email" class="text-danger"></span>
-			</div>
+			
 			<div class="form-group">
 				<label asp-for="PhoneNumber" class="control-label"></label>
 				<input asp-for="PhoneNumber" class="form-control" />
 				<span asp-validation-for="PhoneNumber" class="text-danger"></span>
 			</div>
 			<div class="form-group">
-				<input type="submit" value="Save" class="btn btn-primary"/>
+				<input type="submit" value="Update" class="btn btn-primary"/>
 			</div>
 		</form>
 	</div>

@@ -49,5 +49,10 @@ namespace CarSaleManage.Repositories
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Vehicle?> FIndByIdWithVehicleAsync(int id)
+        {
+            return await _context.Vehicle.Include(v=>v.AppUser).FirstOrDefaultAsync(v=>v.Id == id);
+        }
     }
 }

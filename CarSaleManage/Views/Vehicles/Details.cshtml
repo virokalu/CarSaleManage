@@ -10,6 +10,40 @@
     <h4>Vehicle</h4>
     <hr />
     <dl class="row">
+        <dt class="col-sm-2">
+            Buyer
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.AppUserId == null)
+            {
+                <form asp-action="Buy" method="post">
+                    <input type="hidden" name="vehicleId" value="@Model.Id" />
+                    <select name="userId">
+                        @if (ViewBag.Users is List<AppUser> users && users.Any())
+                        {
+                            foreach (var user in users)
+                            {
+                                <option value="@user.Id">@user.Email (@user.Firstname @user.Lastname)</option>
+                            }
+                        }
+                        else
+                        {
+                            <option disabled>No users available</option>
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-success">Assign to User</button>
+                </form>
+            }
+            else
+            {
+                <span>Sold to @Model.AppUser?.Email on </span>
+                @Model.PurchaseDate?.ToString("yyyy-MM-dd")
+                <form asp-action="RemoveBuy" method="post">
+                    <input type="hidden" name="vehicleId" value="@Model.Id" />
+                    <button type="submit" class="btn btn-danger">Remove Assignment</button>
+                </form>
+            }
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Make)
         </dt>

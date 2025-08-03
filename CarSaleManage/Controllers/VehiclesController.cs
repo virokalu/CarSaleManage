@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using CarSaleManage.Models.Services;
 using CarSaleManage.Models.Dtos;
+using System.Threading.Tasks;
 
 namespace CarSaleManage.Controllers
 {
@@ -9,10 +10,12 @@ namespace CarSaleManage.Controllers
     public class VehiclesController : Controller
     {
         private readonly IVehicleService _vehicleService;
+        private readonly IUserService _userService;
 
-        public VehiclesController(IVehicleService vehicleService)
+        public VehiclesController(IVehicleService vehicleService, IUserService userService)
         {
             _vehicleService = vehicleService;
+            _userService = userService;
         }
 
         // GET: Vehicles
@@ -28,6 +31,7 @@ namespace CarSaleManage.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Users = await _userService.ListAsync();
 
             var result = await _vehicleService.FindByIdAsync(id.Value);
             if (result.Success) return View(result.Data);
@@ -150,6 +154,23 @@ namespace CarSaleManage.Controllers
             var result = await _vehicleService.Delete(id);
             if (result.Success) return RedirectToAction(nameof(Index));
 
+            Console.WriteLine(result.Error);
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Buy(int vehicleId, string userId)
+        {
+            var result = await _vehicleService.Buy(vehicleId, userId);
+            if (result.Success) return RedirectToAction(nameof(Details), new {id = vehicleId});
+
+            Console.WriteLine(result.Error);
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<ActionResult> RemoveBuy(int vehicleId)
+        {
+            var result = await _vehicleService.RemoveBuy(vehicleId);
+            if (result.Success) return RedirectToAction(nameof(Details), new { id = vehicleId });
             Console.WriteLine(result.Error);
             return NotFound();
         }

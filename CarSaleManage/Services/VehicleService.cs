@@ -3,16 +3,19 @@ using CarSaleManage.Models.Dtos;
 using CarSaleManage.Models.Repositories;
 using CarSaleManage.Models.Services;
 using CarSaleManage.Models.Services.Communication;
+using Microsoft.AspNetCore.Identity;
 
 namespace CarSaleManage.Services
 {
     public class VehicleService : IVehicleService
     {
         private readonly IVehicleRepository _vehicleRepository;
+        private readonly UserManager<AppUser> _userManager;
 
-        public VehicleService(IVehicleRepository vehicleRepository)
+        public VehicleService(IVehicleRepository vehicleRepository, UserManager<AppUser> userManager)
         {
             _vehicleRepository = vehicleRepository;
+            _userManager = userManager;
         }
 
         public async Task<ServiceResult<Vehicle>> Delete(int id)
@@ -43,7 +46,7 @@ namespace CarSaleManage.Services
         {
             try
             {
-                var vehicle = await _vehicleRepository.FindByIdAsync(id);
+                var vehicle = await _vehicleRepository.FIndByIdWithVehicleAsync(id);
                 if (vehicle == null)
                 {
                     return ServiceResult<Vehicle>.Fail("Vehicle not Found");
@@ -155,6 +158,47 @@ namespace CarSaleManage.Services
                 return ServiceResult<Vehicle>.Ok();
             }
             catch (Exception ex)
+            {
+                return ServiceResult<Vehicle>.Fail(ex.Message);
+            }
+        }
+            
+        public async Task<ServiceResult<Vehicle>> Buy(int id, string userId)
+        {
+            try
+            {
+                var vehicle = await _vehicleRepository.FIndByIdWithVehicleAsync(id);
+                var user = await _userManager.FindByIdAsync(userId);
+                if (vehicle != null && user != null)
+                {
+                    vehicle.AppUserId = userId;
+                    vehicle.PurchaseDate = DateTime.Now;
+                    await _vehicleRepository.CompleteAsync();
+                    return ServiceResult<Vehicle>.Ok(vehicle);
+                }
+                return ServiceResult<Vehicle>.Fail("User or vehicle not found!");
+            }
+            catch (Exception ex) 
+            {
+                return ServiceResult<Vehicle>.Fail(ex.Message);
+            }
+        }
+
+        public async Task<ServiceResult<Vehicle>> RemoveBuy(int id)
+        {
+            try
+            {
+                var vehicle = await _vehicleRepository.FIndByIdWithVehicleAsync(id);
+                if (vehicle != null)
+                {
+                    vehicle.AppUserId = null;
+                    vehicle.PurchaseDate = null;
+                    await _vehicleRepository.CompleteAsync();
+                    return ServiceResult<Vehicle>.Ok(vehicle);
+                }
+                return ServiceResult<Vehicle>.Fail("Vehicle not found!");
+            }
+            catch(Exception ex)
             {
                 return ServiceResult<Vehicle>.Fail(ex.Message);
             }

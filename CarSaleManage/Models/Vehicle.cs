@@ -23,6 +23,7 @@ public class Vehicle
     public int? MeterReading { get; set; }
     public string? AppUserId { get; set; }
     public AppUser? AppUser { get; set; }
+    public DateTime? PurchaseDate { get; set; }
     public List<string> Images { get; set; } = new List<string>();
 
 }

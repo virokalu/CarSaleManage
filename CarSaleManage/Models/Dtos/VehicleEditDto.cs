@@ -1,4 +1,6 @@
-﻿namespace CarSaleManage.Models.Dtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CarSaleManage.Models.Dtos
 {
     public class VehicleEditDto
     {
@@ -10,6 +12,7 @@
         public string? UsedCountry { get; set; }
         public int Year { get; set; }
         public string? RegNo { get; set; }
+        [DataType(DataType.Date)]
         public DateTime RegDate { get; set; }
         public string? EngineNo { get; set; }
         public string? FuelSystem { get; set; }

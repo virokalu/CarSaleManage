@@ -59,6 +59,7 @@ namespace CarSaleManage.Controllers
                         Firstname = user.Firstname,
                         Lastname = user.Lastname,
                         PhoneNumber = user.PhoneNumber,
+                        EmailConfirmed = user.EmailConfirmed,
                     };
                     return View(userEditDto);
                 }

@@ -70,19 +70,24 @@ namespace CarSaleManage.Services
 
         public async Task<IEnumerable<AppUser>> ListAsync()
         {
-            return await _userManager.Users.ToListAsync();
+            return await _userManager.Users
+                .OrderByDescending(u => u.Id)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<AppUser>> SearchListAsync(string? searchString)
         {
             if (string.IsNullOrEmpty(searchString))
             {
-                return await _userManager.Users.ToListAsync();
+                return await _userManager.Users
+                    .OrderByDescending(u => u.Id)
+                    .ToListAsync();
             }
             else
             {
                 return await _userManager.Users
                 .Where(u => u.Firstname.Contains(searchString) || u.Lastname.Contains(searchString) || (u.Email != null && u.Email.Contains(searchString)))
+                .OrderByDescending(u => u.Id)
                 .ToListAsync();
             }
         }

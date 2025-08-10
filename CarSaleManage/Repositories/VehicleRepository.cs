@@ -13,7 +13,9 @@ namespace CarSaleManage.Repositories
 
         public async Task<IEnumerable<Vehicle>> ListAsync()
         {
-            return await _context.Vehicle.ToListAsync();
+            return await _context.Vehicle
+                .OrderByDescending(v => v.Id)
+                .ToListAsync();
         }
 
         public async Task AddAsync(Vehicle vehicle)
@@ -71,6 +73,7 @@ namespace CarSaleManage.Repositories
                               v.EngineCap == searchInt.Value ||
                               v.MeterReading == searchInt.Value))
                 )
+                .OrderByDescending(v => v.Id)
                 .ToListAsync();
         }
     }

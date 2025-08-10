@@ -19,7 +19,7 @@ namespace CarSaleManage.Controllers
         }
 
         // GET: Vehicles
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
             return View(await _vehicleService.ListAsync());
         }

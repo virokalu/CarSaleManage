@@ -54,5 +54,24 @@ namespace CarSaleManage.Repositories
         {
             return await _context.Vehicle.Include(v=>v.AppUser).FirstOrDefaultAsync(v=>v.Id == id);
         }
+
+        public async Task<IEnumerable<Vehicle>> SearchListAsync(string searchString, int? searchInt)
+        {
+            return await _context.Vehicle
+                .Where(v => (v.ChassisNo != null && v.ChassisNo.Contains(searchString)) ||
+                            (v.Make !=null && v.Make.Contains(searchString)) ||
+                            (v.ModelNo != null && v.ModelNo.Contains(searchString)) ||
+                            (v.Classification != null && v.Classification.Contains(searchString)) ||
+                            (v.Origin != null && v.Origin.Contains(searchString)) ||
+                            (v.UsedCountry != null && v.UsedCountry.Contains(searchString)) ||
+                            (v.RegNo != null && v.RegNo.Contains(searchString)) ||
+                            (v.FuelSystem != null && v.FuelSystem.Contains(searchString)) ||
+                            (searchInt.HasValue &&
+                             (v.Year == searchInt.Value ||
+                              v.EngineCap == searchInt.Value ||
+                              v.MeterReading == searchInt.Value))
+                )
+                .ToListAsync();
+        }
     }
 }

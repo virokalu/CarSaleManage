@@ -203,5 +203,12 @@ namespace CarSaleManage.Services
                 return ServiceResult<Vehicle>.Fail(ex.Message);
             }
         }
+
+        public Task<IEnumerable<Vehicle>> SearchListAsync(string searchString)
+        {
+            int intValue;
+            int.TryParse(searchString, out intValue);
+            
+        }
     }
 }

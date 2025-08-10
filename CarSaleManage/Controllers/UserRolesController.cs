@@ -1,4 +1,5 @@
 ﻿using CarSaleManage.Models;
+using CarSaleManage.Models.Services;
 using CarSaleManage.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,15 +12,18 @@ namespace CarSaleManage.Controllers
 
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUserService _userService;
 
-        public UserRolesController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
+        public UserRolesController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IUserService userService)
         {
             _roleManager = roleManager;
             _userManager = userManager;
+            _userService = userService;
         }
         public async Task<IActionResult> Index()
         {
-            var users = await _userManager.Users.ToListAsync();
+            string? searchString = Request.Query["searchString"];
+            var users = await _userService.SearchListAsync(searchString);
             var userRolesViewModel = new List<UserRolesViewModel>();
             foreach (AppUser user in users)
             {

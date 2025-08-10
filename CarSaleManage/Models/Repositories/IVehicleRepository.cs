@@ -3,7 +3,7 @@
     public interface IVehicleRepository
     {
         Task<IEnumerable<Vehicle>> ListAsync();
-        Task<IEnumerable<Vehicle>> SearchListAsync(string searchString);
+        Task<IEnumerable<Vehicle>> SearchListAsync(string searchString, int? searchInt);
         Task AddAsync(Vehicle vehicle);
         Task<Vehicle?> FindByIdAsync(int id);
         Task<Vehicle?> FIndByIdWithVehicleAsync(int id);

@@ -204,11 +204,18 @@ namespace CarSaleManage.Services
             }
         }
 
-        public Task<IEnumerable<Vehicle>> SearchListAsync(string searchString)
+        public Task<IEnumerable<Vehicle>> SearchListAsync(string? searchString)
         {
-            int intValue;
-            int.TryParse(searchString, out intValue);
-            
+            if (searchString == null)
+            {
+                return _vehicleRepository.ListAsync();
+            }
+            else
+            {
+                int intValue;
+                int.TryParse(searchString, out intValue);
+                return _vehicleRepository.SearchListAsync(searchString, intValue);
+            }
         }
     }
 }

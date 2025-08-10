@@ -15,8 +15,8 @@ namespace CarSaleManage.Controllers
         //GET: User
         public async Task<IActionResult> Index()
         {
-            var users = await _userService.ListAsync();
-            return View(users);
+            string? searchString = Request.Query["searchString"];
+            return View(await _userService.SearchListAsync(searchString));
         }
 
         // GET: User/Create

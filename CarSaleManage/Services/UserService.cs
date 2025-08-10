@@ -73,6 +73,20 @@ namespace CarSaleManage.Services
             return await _userManager.Users.ToListAsync();
         }
 
+        public async Task<IEnumerable<AppUser>> SearchListAsync(string? searchString)
+        {
+            if (string.IsNullOrEmpty(searchString))
+            {
+                return await _userManager.Users.ToListAsync();
+            }
+            else
+            {
+                return await _userManager.Users
+                .Where(u => u.Firstname.Contains(searchString) || u.Lastname.Contains(searchString) || (u.Email != null && u.Email.Contains(searchString)))
+                .ToListAsync();
+            }
+        }
+
         public async Task<IdentityResult> UpdateAsync(UserEditDto user)
         {
             var existingUser = await _userManager.FindByIdAsync(user.Id);

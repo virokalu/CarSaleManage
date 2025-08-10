@@ -4,12 +4,10 @@
     ViewData["Title"] = "Vehicles";
 }
 
-<div class="row mb-3">
-    <div class="col text-end">
-        <a asp-action="Create" class="btn btn-success px-4 py-2 shadow-sm">
-            <i class="bi bi-plus-circle me-1"></i> Add New Vehicle
-        </a>
-    </div>
+<div class="d-flex justify-content-end mb-4">
+    <a asp-action="Create" class="btn btn-success px-4 py-2 shadow-sm">
+        <i class="bi bi-plus-circle me-1"></i> Add New Vehicle
+    </a>
 </div>
 
 <div class="row mb-4">
@@ -69,6 +67,10 @@
             </div>
         </div>
 
+    }
+    @if (Model.Count() == 0)
+    {
+        <p>No Vehicles to display...</p>
     }
 </div>
 

@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using CarSaleManage.Models;
+using CarSaleManage.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarSaleManage.Controllers

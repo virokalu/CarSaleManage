@@ -1,108 +1,130 @@
-﻿@model CarSaleManagement.Models.Vehicle
+﻿@model CarSaleManage.Models.Vehicle
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Vehicle Details";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Vehicle</h4>
+<div class="container-fluid mt-4">
+    <h2 class="mb-3"><i class="bi bi-info-circle me-2"></i>Vehicle Details</h2>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Make)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Make)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ModelNo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ModelNo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Classification)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Classification)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Origin)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Origin)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UsedCountry)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UsedCountry)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Year)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Year)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RegNo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RegNo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RegDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RegDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EngineNo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EngineNo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FuelSystem)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FuelSystem)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EngineCap)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EngineCap)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ChassisNo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ChassisNo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FuelType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FuelType)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Color)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Color)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MeterReading)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MeterReading)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+    <div class="card shadow-sm border-0 mb-5">
+        <div class="card-body">
+            <!-- Buyer Section -->
+            <div class="p-3 mb-4 rounded bg-light border">
+                <h5 class="mb-3"><i class="bi bi-person-check me-2"></i>Buyer</h5>
+                @if (Model.AppUserId == null)
+                {
+                    <form asp-action="Buy" method="post" class="d-flex flex-wrap gap-2 align-items-center">
+                        <input type="hidden" name="vehicleId" value="@Model.Id" />
+                        <select name="userId" class="form-select w-auto">
+                            @if (ViewBag.Users is List<AppUser> users && users.Any())
+                            {
+                                foreach (var user in users)
+                                {
+                                    <option value="@user.Id">@user.Email (@user.Firstname @user.Lastname)</option>
+                                }
+                            }
+                            else
+                            {
+                                <option disabled>No users available</option>
+                            }
+                        </select>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-person-plus"></i> Assign to User
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <p class="mb-2">
+                        <strong>Sold to:</strong> @Model.AppUser?.Firstname @Model.AppUser?.Lastname (@Model.AppUser?.Email)<br />
+                        <strong>Date:</strong> @Model.PurchaseDate?.ToString("yyyy-MM-dd")
+                    </p>
+                    <form asp-action="RemoveBuy" method="post">
+                        <input type="hidden" name="vehicleId" value="@Model.Id" />
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-x-circle"></i> Remove Assignment
+                        </button>
+                    </form>
+                }
+            </div>
+
+            <!-- Vehicle Images -->
+            <div class="mb-4">
+                <h5><i class="bi bi-images me-2"></i>Images</h5>
+                @if (Model.Images != null && Model.Images.Any())
+                {
+                    <div class="d-flex flex-wrap gap-3">
+                        @foreach (var img in Model.Images)
+                        {
+                            <img src="@img" alt="Vehicle Image" class="img-thumbnail" style="max-width: 400px;" />
+                        }
+                    </div>
+                }
+                else
+                {
+                    <span class="text-muted">No images available.</span>
+                }
+            </div>
+
+            <!-- Vehicle Info -->
+            <dl class="row">
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Make)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Make)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ModelNo)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.ModelNo)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Classification)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Classification)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Origin)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Origin)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.UsedCountry)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.UsedCountry)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Year)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Year)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RegNo)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.RegNo)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RegDate)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.RegDate)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.EngineNo)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.EngineNo)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FuelSystem)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.FuelSystem)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.EngineCap)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.EngineCap)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ChassisNo)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.ChassisNo)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FuelType)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.FuelType)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Color)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Color)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.MeterReading)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.MeterReading)</dd>
+            </dl>
+
+            <!-- Actions -->
+            <div class="mt-4 d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left-circle"></i> Back to List
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">
+                    <i class="bi bi-pencil-square"></i> Edit Vehicle
+                </a>
+            </div>
+        </div>
+    </div>
 </div>

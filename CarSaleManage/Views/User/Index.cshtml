@@ -1,0 +1,62 @@
+﻿@model IEnumerable<AppUser>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="d-flex justify-content-end mb-4">
+    <a asp-action="Create" class="btn btn-success px-4 py-2 shadow-sm">
+        <i class="bi bi-person-plus me-1"></i> Create New User
+    </a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6 offset-md-3">
+        <form asp-action="Index" method="get" class="input-group shadow-sm">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="bi bi-search"></i>
+            </span>
+            <input type="text" name="searchString" class="form-control border-start-0" placeholder="Search users..." />
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-arrow-right-circle"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-lg-2 g-4">
+    @foreach (var item in Model)
+    {
+        <div>
+            <div class="card shadow-sm border-0">
+                <div class="card-body d-flex align-items-center justify-content-between flex-wrap">
+                    <div class="d-flex flex-column flex-md-row align-items-md-center gap-3">
+                        <div>
+                            <h5 class="mb-1">@item.Firstname @item.Lastname</h5>
+                            <p class="mb-0 text-muted small">
+                                <i class="bi bi-envelope me-1"></i> @item.Email<br />
+                                <i class="bi bi-telephone me-1"></i> @item.PhoneNumber<br />
+                                <i class="bi bi-check-circle me-1"></i> Email Confirmed: @item.EmailConfirmed
+                            </p>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 mt-3 mt-md-0">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">
+                            <i class="bi bi-info-circle"></i> Details
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (Model.Count() == 0)
+    {
+        <p>No Users to display...</p>
+    }
+</div>

@@ -17,19 +17,27 @@
                 {
                     <form asp-action="Buy" method="post" class="d-flex flex-wrap gap-2 align-items-center">
                         <input type="hidden" name="vehicleId" value="@Model.Id" />
-                        <select name="userId" class="form-select w-auto">
-                            @if (ViewBag.Users is List<AppUser> users && users.Any())
-                            {
-                                foreach (var user in users)
-                                {
-                                    <option value="@user.Id">@user.Email (@user.Firstname @user.Lastname)</option>
-                                }
-                            }
-                            else
-                            {
-                                <option disabled>No users available</option>
-                            }
-                        </select>
+
+                        @Html.DropDownList(
+                                 "userId",
+                                 ViewBag.UserList as List<SelectListItem>,
+                                 "Select a user",
+                                 new { @class = "form-select userSelect" }
+                                 )
+
+                        @* <select name="userId" class="form-select w-auto"> *@
+                        @*     @if (ViewBag.Users is List<AppUser> users && users.Any()) *@
+                        @*     { *@
+                        @*         foreach (var user in users) *@
+                        @*         { *@
+                        @*             <option value="@user.Id">@user.Email (@user.Firstname @user.Lastname)</option> *@
+                        @*         } *@
+                        @*     } *@
+                        @*     else *@
+                        @*     { *@
+                        @*         <option disabled>No users available</option> *@
+                        @*     } *@
+                        @* </select> *@
                         <button type="submit" class="btn btn-success">
                             <i class="bi bi-person-plus"></i> Assign to User
                         </button>
@@ -58,7 +66,7 @@
                     <div class="d-flex flex-wrap gap-3">
                         @foreach (var img in Model.Images)
                         {
-                            <img src="@img" alt="Vehicle Image" class="img-thumbnail" style="max-width: 400px;" />
+                            <img src="@img" alt="Vehicle Image" class="img-thumbnail" style="max-width: 380px;" />
                         }
                     </div>
                 }
@@ -128,3 +136,9 @@
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(".userSelect").select2();
+</script>

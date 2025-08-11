@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using CarSaleManage.Models.Services;
 using CarSaleManage.Models.Dtos;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CarSaleManage.Controllers
 {
@@ -32,7 +33,16 @@ namespace CarSaleManage.Controllers
             {
                 return NotFound();
             }
+
+            var users = await _userService.ListAsync();
             ViewBag.Users = await _userService.ListAsync();
+            ViewBag.UserList = users
+                .OrderBy(u => u.Firstname)
+                .ThenBy(u => u.Lastname)
+                .Select(u => new SelectListItem{
+                    Value = u.Id.ToString(),
+                    Text = $"{u.Firstname} {u.Lastname}"
+                }).ToList();
 
             var result = await _vehicleService.FindByIdAsync(id.Value);
             if (result.Success) return View(result.Data);

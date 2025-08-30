@@ -7,5 +7,7 @@ namespace CarSaleManage.Models
         public required string Firstname {  get; set; }
         public required string Lastname { get; set; }
         public ICollection<Vehicle> Vehicles { get; } = new List<Vehicle>();
+        public string IdNumber { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
     }
 }

@@ -10,5 +10,7 @@ namespace CarSaleManage.Models.Dtos
         [EmailAddress(ErrorMessage = "Invalid email address.")]
         public required string Email { get; set; }
         public string? PhoneNumber { get; set; }
+        public string? IdNumber { get; set; }
+        public string? Address { get; set; }
     }
 }

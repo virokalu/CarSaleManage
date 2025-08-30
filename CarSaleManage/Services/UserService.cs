@@ -25,6 +25,9 @@ namespace CarSaleManage.Services
                 Firstname = user.Firstname,
                 Lastname = user.Lastname,
                 Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                IdNumber = user.IdNumber!,
+                Address = user.Address!,
             };
             await _userStore.SetUserNameAsync(newUser, user.Email, CancellationToken.None);
             var result = await _userManager.CreateAsync(newUser);
@@ -120,6 +123,8 @@ namespace CarSaleManage.Services
             {
                 existingUser.Firstname = user.Firstname;
                 existingUser.Lastname = user.Lastname;
+                existingUser.Address = user.Address!;
+                existingUser.IdNumber = user.IdNumber!;
                 var setNameResult = await _userManager.UpdateAsync(existingUser);
                 if (!setNameResult.Succeeded)
                 {

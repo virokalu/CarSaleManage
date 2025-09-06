@@ -1,9 +1,11 @@
 ﻿using CarSaleManage.Models.Dtos;
 using CarSaleManage.Models.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarSaleManage.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")]
     public class UserController : Controller
     {
         private readonly IUserService _userService;

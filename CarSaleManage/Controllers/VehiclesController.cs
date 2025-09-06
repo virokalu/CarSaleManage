@@ -4,14 +4,17 @@ using CarSaleManage.Models.Services;
 using CarSaleManage.Models.Dtos;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using CarSaleManage.Services;
 
 namespace CarSaleManage.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Admin,Manager")]
     public class VehiclesController : Controller
     {
         private readonly IVehicleService _vehicleService;
         private readonly IUserService _userService;
+        private readonly PDFService _pdfService = new PDFService();
 
         public VehiclesController(IVehicleService vehicleService, IUserService userService)
         {
@@ -143,6 +146,7 @@ namespace CarSaleManage.Controllers
         }
 
         // GET: Vehicles/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -158,6 +162,7 @@ namespace CarSaleManage.Controllers
         }
 
         // POST: Vehicles/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -184,6 +189,21 @@ namespace CarSaleManage.Controllers
             if (result.Success) return RedirectToAction(nameof(Details), new { id = vehicleId });
             Console.WriteLine(result.Error);
             return NotFound();
+        }
+
+        //PDF Downloader
+        [HttpGet]
+        public async Task<IActionResult> DownloadReceipt(string userId, int vehicleId)
+        {
+            var user = await _userService.GetAsync(userId);
+            var vehicle = await _vehicleService.FindByIdAsync(vehicleId);
+
+            if (user?.Data == null || vehicle?.Data == null)
+                return NotFound();
+
+            var pdfBytes = _pdfService.GenerateReceiptPdf(user.Data, vehicle.Data);
+
+            return File(pdfBytes, "application/pdf");
         }
     }
 }

@@ -30,7 +30,9 @@ namespace CarSaleManage.Services
                 Address = user.Address!,
             };
             await _userStore.SetUserNameAsync(newUser, user.Email, CancellationToken.None);
+            await _userManager.AddPasswordAsync(newUser, "123Pa$$word.");
             var result = await _userManager.CreateAsync(newUser);
+            
 
             if (result.Succeeded)
             {
@@ -119,12 +121,13 @@ namespace CarSaleManage.Services
                     });
                 }
             }
-            if (existingUser.Firstname != user.Firstname || existingUser.Lastname != user.Lastname)
+            if (existingUser.Firstname != user.Firstname || existingUser.Lastname != user.Lastname || existingUser.IdNumber != user.IdNumber || existingUser.Address != user.Address || existingUser.EmailConfirmed != user.EmailConfirmed)
             {
                 existingUser.Firstname = user.Firstname;
                 existingUser.Lastname = user.Lastname;
                 existingUser.Address = user.Address!;
                 existingUser.IdNumber = user.IdNumber!;
+                existingUser.EmailConfirmed = user.EmailConfirmed ?? existingUser.EmailConfirmed;
                 var setNameResult = await _userManager.UpdateAsync(existingUser);
                 if (!setNameResult.Succeeded)
                 {

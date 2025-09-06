@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarSaleManage.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class RolesController : Controller
 {
     private readonly  RoleManager<IdentityRole> _roleManager;

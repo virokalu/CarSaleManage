@@ -22,22 +22,9 @@
                                  "userId",
                                  ViewBag.UserList as List<SelectListItem>,
                                  "Select a user",
-                                 new { @class = "form-select userSelect" }
+                                 new { @class = "form-select userSelect", required="required" }
                                  )
 
-                        @* <select name="userId" class="form-select w-auto"> *@
-                        @*     @if (ViewBag.Users is List<AppUser> users && users.Any()) *@
-                        @*     { *@
-                        @*         foreach (var user in users) *@
-                        @*         { *@
-                        @*             <option value="@user.Id">@user.Email (@user.Firstname @user.Lastname)</option> *@
-                        @*         } *@
-                        @*     } *@
-                        @*     else *@
-                        @*     { *@
-                        @*         <option disabled>No users available</option> *@
-                        @*     } *@
-                        @* </select> *@
                         <button type="submit" class="btn btn-success">
                             <i class="bi bi-person-plus"></i> Assign to User
                         </button>
@@ -49,12 +36,22 @@
                         <strong>Sold to:</strong> @Model.AppUser?.Firstname @Model.AppUser?.Lastname (@Model.AppUser?.Email)<br />
                         <strong>Date:</strong> @Model.PurchaseDate?.ToString("yyyy-MM-dd")
                     </p>
-                    <form asp-action="RemoveBuy" method="post">
-                        <input type="hidden" name="vehicleId" value="@Model.Id" />
-                        <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-x-circle"></i> Remove Assignment
-                        </button>
-                    </form>
+                    <div class="d-flex gap-2 mt-3 mt-md-0">
+                        <form asp-action="RemoveBuy" method="post">
+                            <input type="hidden" name="vehicleId" value="@Model.Id" />
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-x-circle"></i> Remove Assignment
+                            </button>
+                        </form>
+                        <a asp-controller="Vehicles"
+                           asp-action="DownloadReceipt"
+                           asp-route-userId="@Model.AppUserId"
+                           asp-route-vehicleId="@Model.Id"
+                           target="_blank"
+                           class="btn btn-primary">
+                            View Receipt (PDF)
+                        </a>
+                    </div>
                 }
             </div>
 

@@ -1,12 +1,14 @@
 ﻿using CarSaleManage.Models;
 using CarSaleManage.Models.Services;
 using CarSaleManage.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarSaleManage.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserRolesController : Controller
     {
 
@@ -14,6 +16,7 @@ namespace CarSaleManage.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUserService _userService;
 
+        
         public UserRolesController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IUserService userService)
         {
             _roleManager = roleManager;

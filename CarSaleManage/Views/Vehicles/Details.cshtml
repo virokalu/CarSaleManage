@@ -29,6 +29,9 @@
                             <i class="bi bi-person-plus"></i> Assign to User
                         </button>
                     </form>
+                    <button id="generateLinkBtn" class="btn btn-secondary">Generate Shareable Link</button>
+                    <input type="text" id="shareLink" class="form-control mt-2" readonly style="display:none;" />
+
                 }
                 else
                 {
@@ -138,4 +141,11 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(".userSelect").select2();
+</script>
+<script>
+    $('#generateLinkBtn').click(function() {
+        $.post('@Url.Action("GenerateShareLink", "Vehicles")', { vehicleId: '@Model.Id' }, function(data) {
+            $('#shareLink').val(data.url).show();
+        });
+    });
 </script>

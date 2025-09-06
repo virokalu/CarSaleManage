@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CarSaleManage.Services;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.DotNet.Scaffolding.Shared;
+using System.Text.Json;
 
 namespace CarSaleManage.Controllers
 {
@@ -15,11 +18,13 @@ namespace CarSaleManage.Controllers
         private readonly IVehicleService _vehicleService;
         private readonly IUserService _userService;
         private readonly PDFService _pdfService = new PDFService();
+        private readonly IDataProtector _protector;
 
-        public VehiclesController(IVehicleService vehicleService, IUserService userService)
+        public VehiclesController(IVehicleService vehicleService, IUserService userService, IDataProtectionProvider provider)
         {
             _vehicleService = vehicleService;
             _userService = userService;
+            _protector = provider.CreateProtector("VehicleShareLink"); ;
         }
 
         // GET: Vehicles
@@ -204,6 +209,52 @@ namespace CarSaleManage.Controllers
             var pdfBytes = _pdfService.GenerateReceiptPdf(user.Data, vehicle.Data);
 
             return File(pdfBytes, "application/pdf");
+        }
+        // Generate a shareable link
+        [HttpPost]
+        public IActionResult GenerateShareLink(int vehicleId, int expireMinutes = 60)
+        {
+            var payload = new
+            {
+                VehicleId = vehicleId,
+                Expiry = DateTime.UtcNow.AddMinutes(expireMinutes)
+            };
+            var json = JsonSerializer.Serialize(payload);
+            var token = _protector.Protect(json);
+
+            var url = Url.Action("SharedView", "Vehicles", new { token }, Request.Scheme);
+            return Json(new { url });
+        }
+
+        // View for shared link
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> SharedView(string token)
+        {
+            try
+            {
+                var json = _protector.Unprotect(token);
+                var payload = JsonSerializer.Deserialize<ShareTokenPayload>(json);
+
+                if (payload == null || payload.Expiry < DateTime.UtcNow)
+                    return Content("This link has expired.");
+
+                var result = await _vehicleService.FindByIdAsync(payload.VehicleId);
+                if (!result.Success || result.Data == null)
+                    return NotFound();
+
+                return View("SharedVehicle", result.Data); // Create a SharedVehicle.cshtml view
+            }
+            catch
+            {
+                return Content("Invalid or expired link.");
+            }
+        }
+
+        private class ShareTokenPayload
+        {
+            public int VehicleId { get; set; }
+            public DateTime Expiry { get; set; }
         }
     }
 }

@@ -108,6 +108,7 @@ namespace CarSaleManage.Controllers
         }
 
         // GET: User/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string? id)
         {
             if (id == null)
@@ -125,6 +126,7 @@ namespace CarSaleManage.Controllers
 
 
         // POST: User/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)

@@ -19,17 +19,22 @@
                         <input type="hidden" name="vehicleId" value="@Model.Id" />
 
                         @Html.DropDownList(
-                                 "userId",
-                                 ViewBag.UserList as List<SelectListItem>,
-                                 "Select a user",
-                                 new { @class = "form-select userSelect", required="required" }
-                                 )
+                                          "userId",
+                                          ViewBag.UserList as List<SelectListItem>,
+                                          "Select a user",
+                                          new { @class = "form-select userSelect", required="required" }
+                                          )
 
-                        <button type="submit" class="btn btn-success">
-                            <i class="bi bi-person-plus"></i> Assign to User
-                        </button>
+                        <div class="d-flex gap-2 mt-3 mt-md-0">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-person-plus"></i> Assign to User
+                            </button>
+                            <button id="generateLinkBtn" class="btn btn-secondary">
+                                <i class="bi bi-share"></i> Share
+                            </button>
+                        </div>
                     </form>
-                    <button id="generateLinkBtn" class="btn btn-secondary">Generate Shareable Link</button>
+
                     <input type="text" id="shareLink" class="form-control mt-2" readonly style="display:none;" />
 
                 }
@@ -40,19 +45,22 @@
                         <strong>Date:</strong> @Model.PurchaseDate?.ToString("yyyy-MM-dd")
                     </p>
                     <div class="d-flex gap-2 mt-3 mt-md-0">
-                        <form asp-action="RemoveBuy" method="post">
-                            <input type="hidden" name="vehicleId" value="@Model.Id" />
-                            <button type="submit" class="btn btn-danger">
-                                <i class="bi bi-x-circle"></i> Remove Assignment
-                            </button>
-                        </form>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <form asp-action="RemoveBuy" method="post">
+                                <input type="hidden" name="vehicleId" value="@Model.Id" />
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-x-circle"></i> Remove Assign
+                                </button>
+                            </form>
+                        }
                         <a asp-controller="Vehicles"
                            asp-action="DownloadReceipt"
                            asp-route-userId="@Model.AppUserId"
                            asp-route-vehicleId="@Model.Id"
                            target="_blank"
                            class="btn btn-primary">
-                            View Receipt (PDF)
+                            <i class="bi bi-filetype-pdf"></i> View Receipt
                         </a>
                     </div>
                 }
@@ -143,9 +151,37 @@
     $(".userSelect").select2();
 </script>
 <script>
-    $('#generateLinkBtn').click(function() {
-        $.post('@Url.Action("GenerateShareLink", "Vehicles")', { vehicleId: '@Model.Id' }, function(data) {
-            $('#shareLink').val(data.url).show();
+    function isMobile() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    $('#generateLinkBtn').click(function () {
+        $.post('@Url.Action("GenerateShareLink", "Vehicles")', { vehicleId: '@Model.Id' }, function (data) {
+            const link = data.url;
+            $('#shareLink').val(link).show();
+
+            if (isMobile() && navigator.share) {
+                navigator.share({
+                    title: 'Vehicle Share Link',
+                    text: 'View this vehicle:',
+                    url: link
+                }).catch(function (error) {
+                    // fallback: copy to clipboard if share fails
+                    navigator.clipboard.writeText(link);
+                    alert('Link copied to clipboard!');
+                });
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(link).then(function () {
+                    alert('Link copied to clipboard!');
+                }, function () {
+                    alert('Could not copy link. Please copy it manually.');
+                });
+            } else {
+                // fallback for very old browsers
+                $('#shareLink').select();
+                document.execCommand('copy');
+                alert('Link copied to clipboard!');
+            }
         });
     });
 </script>
